@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Token Authentication</title>
+  <script defer src="./static/scripts.js"></script>
+</head>
+
+<body>
+  <h1>Simple Token Authentication</h1>
+
+  <h2>Register</h2>
+  <label for="register_username">Username:</label>
+  <input type="text" id="register_username" placeholder="Enter your username">
+  <br><br>
+  <label for="register_password">Password:</label>
+  <input type="password" id="register_password" placeholder="Enter your password">
+  <br><br>
+  <label for="confirm_password">Confirm Password:</label>
+  <input type="password" id="confirm_password" placeholder="Re-enter your password">
+  <br><br>
+  <button onclick="registerUser()">Register</button>
+
+  <h2>Login</h2>
+  <label for="login_username">Username:</label>
+  <input type="text" id="login_username" placeholder="Enter your username">
+  <br><br>
+  <label for="login_password">Password:</label>
+  <input type="password" id="login_password" placeholder="Enter your password">
+  <br><br>
+  <button onclick="loginUser()">Login</button>
+</body>
+
+</html>
