@@ -3,16 +3,144 @@
 
 <head>
   <meta charset="UTF-8">
-  <script src="../default_scripts.js"></script>
-  <title>User Page</title>
+  <title>{{username}}'s Exhibit</title>
+  <!-- Include Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Link to the user-specific CSS file -->
+  <link rel="stylesheet" href="my_styles.css">
 </head>
 
 <body>
-  <h1>Welcome to Your Page!</h1>
+  <!-- Header Bar -->
+  <header>
+    <div class="header-content">
+      <h1>{{username}}'s Exhibit</h1>
+      <div class="header-buttons">
+        <button onclick="generateInvite()">Generate Invite Link</button>
+        <button id="showFriendsButton" onclick="showFriendsSidebar()">Show Friends</button>
+        <button id="addFriendButton" onclick="toggleFriendForm()">Add Friend</button>
+        <input type="text" id="friendLinkInput" class="friend-link-input" placeholder="Enter invite code"
+          style="display: none;">
+        <button id="submitFriendButton" style="display: none;" onclick="addFriend()">Submit</button>
+        <button onclick="editPage()">Edit my Page</button>
+      </div>
+    </div>
+  </header>
 
-  <button onclick="checkLogin()">Edit my Show</button>
+  <!-- Main Content -->
+  <main>
+    <section>
+      <h2>Welcome to my cyberpunk world!</h2>
+      <p>Feel free to explore and see what I've been up to.</p>
+    </section>
+    <!-- Unified Content Placeholder -->
+    <div id="content-feed"></div>
+    <div id="inviteLink"></div>
+  </main>
 
+  <!-- Friends Sidebar -->
+  <div id="friendsSidebar" class="sidebar">
+    <h2>My Friends</h2>
+    <ul id="friendsList"></ul>
+    <div class="sidebar-buttons">
+      <button onclick="closeFriendsSidebar()">Close</button>
+    </div>
+  </div>
 
+  <!-- Edit Sidebar -->
+  <div id="editSidebar" class="sidebar">
+    <h2>Edit Your Page</h2>
+    <label for="edit-exhibit-title">Exhibit Title:</label>
+    <input type="text" id="edit-exhibit-title" value="{{username}}'s Exhibit">
+    <label for="edit-main-title">Main Title:</label>
+    <input type="text" id="edit-main-title" value="Welcome to my cyberpunk world!">
+
+    <!-- "Add Gallery" Button -->
+    <button id="showGalleryButton" onclick="showGalleryForm()">Add Gallery</button>
+
+    <!-- Gallery Form -->
+    <div id="galleryForm" class="gallery-form">
+      <h3>Create a New Gallery</h3>
+      <label for="gallery-title">Gallery Title:</label>
+      <input type="text" id="gallery-title" placeholder="Enter gallery title">
+      <label for="gallery-images">Select Images:</label>
+      <input type="file" id="gallery-images" accept=".jpg, .jpeg, .png, .raw" multiple>
+      <p id="file-count">No files selected</p>
+      <div class="sidebar-buttons">
+        <!-- Add specific class "gallery-button" -->
+        <button class="gallery-button" onclick="uploadGallery()">Upload Gallery</button>
+        <button class="gallery-button" onclick="hideGalleryForm()">Cancel</button>
+      </div>
+    </div>
+    <!-- End of Gallery Form -->
+
+    <!-- "Add Text Post" Button -->
+    <button id="showTextPostButton" onclick="showTextPostForm()">Add Text Post</button>
+
+    <!-- Text Post Form -->
+    <div id="textPostForm" class="text-post-form">
+      <h3>Create a New Text Post</h3>
+      <label for="text-post-title">Post Title:</label>
+      <input type="text" id="text-post-title" placeholder="Enter post title">
+      <label for="text-post-content">Content:</label>
+      <textarea id="text-post-content" placeholder="Write your post here..."></textarea>
+      <div class="sidebar-buttons">
+        <!-- Add specific class "text-post-button" -->
+        <button class="text-post-button" onclick="uploadTextPost()">Publish Post</button>
+        <button class="text-post-button" onclick="hideTextPostForm()">Cancel</button>
+      </div>
+    </div>
+    <!-- End of Text Post Form -->
+
+    <!-- "Add a Film" Button -->
+    <button id="showFilmButton" onclick="showFilmForm()">Add a Film</button>
+
+    <!-- Film Form -->
+    <div id="filmForm" class="film-form">
+      <h3>Add a New Film</h3>
+      <label for="film-title">Film Title:</label>
+      <input type="text" id="film-title" placeholder="Enter film title">
+      <label for="film-video">Select Video:</label>
+      <input type="file" id="film-video" accept=".mp4, .webm, .ogg">
+      <p id="film-file-name">No file selected</p>
+      <div class="sidebar-buttons">
+        <!-- Add specific class "film-button" -->
+        <button class="film-button" onclick="uploadFilm()">Upload Film</button>
+        <button class="film-button" onclick="hideFilmForm()">Cancel</button>
+      </div>
+    </div>
+    <!-- End of Film Form -->
+
+    <!-- "Add Audio" Button -->
+    <button id="showAudioButton" onclick="showAudioForm()">Add Audio</button>
+
+    <!-- Audio Form -->
+    <div id="audioForm" class="audio-form">
+      <h3>Add a New Audio</h3>
+      <label for="audio-title">Audio Title:</label>
+      <input type="text" id="audio-title" placeholder="Enter audio title">
+      <label for="audio-file">Select Audio File:</label>
+      <input type="file" id="audio-file" accept=".mp3, .wav, .ogg, .flac">
+      <p id="audio-file-name">No file selected</p>
+      <div class="sidebar-buttons">
+        <!-- Add specific class "audio-button" -->
+        <button class="audio-button" onclick="uploadAudio()">Upload Audio</button>
+        <button class="audio-button" onclick="hideAudioForm()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Sidebar Buttons -->
+    <div class="sidebar-buttons">
+      <button onclick="saveChanges()">Save Changes</button>
+      <button onclick="closeSidebar()">Close</button>
+    </div>
+  </div> <!-- Closing #editSidebar -->
+
+  <!-- Overlay (to dim the background when sidebar is open) -->
+  <div id="overlay" onclick="closeSidebar(); closeFriendsSidebar();"></div>
+
+  <!-- Link to the shared JavaScript file -->
+  <script src="my_scripts.js"></script>
 </body>
 
 </html>

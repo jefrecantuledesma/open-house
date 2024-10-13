@@ -1,4 +1,5 @@
 use crate::user;
+use actix_web::cookie::{Cookie, CookieBuilder, SameSite}; // Added import
 use actix_web::{web, HttpResponse, Responder};
 use base64::encode;
 use serde::Deserialize;
@@ -68,9 +69,9 @@ pub async fn login_user(
                             "./user_pages/default_scripts.js",
                             format!("{}my_scripts.js", &user_page_path),
                         ) {
-                            eprintln!("Failed to copy default user HTML: {}", e);
+                            eprintln!("Failed to copy default user JavaScript: {}", e);
                             return HttpResponse::InternalServerError()
-                                .body("Error copying default user HTML.");
+                                .body("Error copying default user JavaScript.");
                         };
                     }
 
@@ -96,17 +97,17 @@ pub async fn login_user(
                     }
                 }
 
-                // Set session cookie
-                HttpResponse::Found()
-                    .header(
-                        "Location",
-                        format!("/user_pages/{}/my_page.html", user.username),
-                    )
-                    .cookie(actix_web::cookie::Cookie::new(
-                        "username",
-                        user.username.clone(),
-                    ))
-                    .finish()
+                // Set session cookie with attributes
+                let cookie = CookieBuilder::new("username", user.username.clone())
+                    .path("/")
+                    .http_only(true)
+                    .same_site(SameSite::Lax)
+                    .secure(false) // Set to true if using HTTPS
+                    .finish();
+
+                HttpResponse::Ok()
+                    .cookie(cookie)
+                    .body(format!("/user_pages/{}/my_page.html", user.username))
             } else {
                 // Invalid password
                 HttpResponse::Unauthorized().body("Invalid password")
@@ -127,15 +128,25 @@ fn modify_html_for_user(html_path: &str, username: &str) -> std::io::Result<()> 
     // Read the contents of the HTML file
     let mut html_content = fs::read_to_string(html_path)?;
 
-    // Add the link to the user-specific CSS file
+    html_content = html_content.replace("{{username}}", username);
+
+    // Create absolute paths for CSS and JS files
     let css_link = format!(
-        r#"<link rel="stylesheet" href="./user_pages/{}/my_styles.css">"#,
+        r#"<link rel="stylesheet" href="/user_pages/{}/my_styles.css">"#,
+        username
+    );
+    let script_tag = format!(
+        r#"<script defer src="/user_pages/{}/my_scripts.js"></script>"#,
         username
     );
 
-    // Insert the CSS link into the <head> section of the HTML
-    let head_index = html_content.find("</head>").unwrap_or(0);
-    html_content.insert_str(head_index, &format!("{}\n", css_link));
+    // Insert the CSS link and script tag into the <head> section of the HTML
+    if let Some(head_index) = html_content.find("</head>") {
+        html_content.insert_str(head_index, &format!("{}\n{}\n", css_link, script_tag));
+    } else {
+        // If </head> not found, add at the beginning
+        html_content = format!("{}\n{}\n{}", css_link, script_tag, html_content);
+    }
 
     // Write the modified content back to the file
     let mut file = OpenOptions::new()
